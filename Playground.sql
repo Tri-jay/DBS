@@ -418,4 +418,141 @@ create view vehicle as (
 );
 
 
-select * from vehicle;
+select count(*) as 'users', state  
+from useraddress 
+group by state
+order by state asc;
+
+select *
+from dvd;  
+
+select *
+from users; 
+
+select publicRating
+from dvd 
+order by `Year` desc  
+limit 10;
+
+select avg(publicRating) as 'rating', Genre 
+from dvd
+where `Year` = 2002
+group by Genre
+having rating >= 2.2; 
+
+select *
+from occupation
+where occupation.occupationId = 164;
+
+select dob
+from users;
+
+select datediff() 
+from users
+where users.occupationId = 164;
+
+select avg(dob) as 'sex', Gender 
+from users  
+group by Gender;
+
+select avg(dob) as 'sex', Gender 
+from users 
+where gender = 'M'
+group by Gender;
+
+
+
+
+select AVG(DATEDIFF(NOW(), dob) / 365) as 'age', min(firstname), min(dob)
+from users
+where users.occupationId = 164
+and users.gender = 'M'
+group by users.occupationId;
+
+create table `DVDNormal`(
+`dvdId` int(20)  NOT NULL,
+`dvdTitle` int(20) NOT NULL,
+`year` int(11) NOT NULL,
+`publicRating` varchar(100) NOT NULL,
+`dvdStudioId` int(20) NOT NULL,
+`dvdStatusId` int(20) NOT NULL,
+`dvdGenreId` int(20) NOT NULL,
+primary key (`dvdId`)
+);  
+
+create table `dvdStudio` (
+`studioId` int(20) not null auto_increment,
+`studioName` varchar(50) default null,
+primary key (`studioId`) 
+);
+
+create table `dvdStatus` (
+`statusId` int(20) not null auto_increment,
+`statusName` varchar(50) default null,
+primary key (`statusId`)
+);
+create table `dvdGenre` (
+`genreId` int(20) not null auto_increment,
+`genreName` varchar(50) default null,
+primary key (`genreId`)
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+
+ALTER TABLE dvdnormal ADD CONSTRAINT dvdnormal_FK_studio FOREIGN KEY (dvdStudioId) REFERENCES dvdstudio(studioId);
+ALTER TABLE dvdnormal ADD CONSTRAINT dvdnormal_FK_status FOREIGN KEY (dvdStatusId) REFERENCES dvdstatus(statusId);
+ALTER TABLE dvdnormal ADD CONSTRAINT dvdnormal_FK_genre FOREIGN KEY (dvdGenreId) REFERENCES dvdgenre(genreId);
+
+CREATE UNIQUE INDEX dvdstudio_studioName_IDX USING BTREE ON c_dbs.dvdstudio (studioName);
+CREATE UNIQUE INDEX dvdstatus_statusName_IDX USING BTREE ON c_dbs.dvdstatus (statusName);
+CREATE UNIQUE INDEX dvdgenre_genreName_IDX USING BTREE ON c_dbs.dvdgenre (genreName);
+
+CREATE INDEX dvd_Studio_IDX USING BTREE ON c_dbs.dvd (Studio);
+CREATE INDEX dvd_Status_IDX USING BTREE ON c_dbs.dvd (Status);
+CREATE INDEX dvd_Genre_IDX USING BTREE ON c_dbs.dvd (Genre);
+
+insert into dvdstudio (studioName)
+select distinct Studio 
+from dvd;
+
+insert into dvdstatus (statusName) 
+select distinct status
+from dvd;
+
+insert into dvdgenre (genreName) 
+select distinct genre
+from dvd;
+
+select *
+from dvd;
+
+select *
+from dvdnormal;
+
+insert into dvdnormal (dvdId, dvdTitle, `year`, publicRating, dvdStudioId, dvdStatusId, dvdGenreId)
+select dvdId, DVD_Title, `year`, publicRating, StudioId, StatusId, GenreId   
+from dvd 
+join dvdstudio on dvd.Studio = dvdStudio.studioName 
+join dvdstatus on dvd.Status = dvdStatus.statusName 
+join dvdgenre on dvd.Genre = dvdGenre.genreName; 
+
+create view DVD as (
+select *
+from dvdnormal
+join dvdstudio on dvdnormal.dvdStudioId = dvdStudio.studioId 
+join dvdstatus on dvdnormal.dvdStatusId = dvdStatus.statusId 
+join dvdgenre on dvdnormal.dvdGenreId = dvdGenre.genreId
+)
+
+
+select *
+from DVD
+join userdvd on dvd.dvdId = userDvdId
+join users on users.userid = userdvd.userId;
+
+select count(*) as `DVDCount`, userdvd.userid, firstname, lastname, gender
+from userdvd
+join users on userdvd.userid = users.userid
+group by userdvd.userid
+order by DVDCount desc 
+limit 1;
+
