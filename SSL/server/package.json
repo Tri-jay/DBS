@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./app.js",
+    "dev": "node-dev ./app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "express": "^5.0.0-beta.1",
+    "knex": "^1.0.4",
+    "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
+    "node-dev": "^7.2.0"
+  }
+}
