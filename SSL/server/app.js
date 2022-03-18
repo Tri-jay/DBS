@@ -26,6 +26,45 @@ app.get("/mysql", async function (req, res) {
   res.json(results);
 });
 
+app.get("/users", async function (req, res) {
+  const results = await conn
+    .select("*")
+    .from("users")
+    .where(req.query)
+    .limit(20);
+
+  res.json(results);
+});
+
+app.get("/dvds", async function (req, res) {
+  const results = await conn.select("*").from("dvd").join(req.query).limit(20);
+  res.json(results);
+});
+
+app.get("/returns", async function (req, res) {
+  const results = await conn
+    .select("*")
+    .from("users")
+
+    // join userdvd on userdvd.userId = users.userId
+    .join("userdvd", "userdvd.userId", "users.userId")
+
+    // join dvd on dvd.dvdId = userdvd.dvdId
+    .join("dvd", "dvd.dvdId", "userdvd.dvdId")
+
+    .limit(5);
+  res.json(results);
+});
+
+app.get("/vehicles", async function (req, res) {
+  const results = await conn
+    .select("*")
+    .from("vehicle")
+    .where(req.query)
+    .limit(20);
+  res.json(results);
+});
+
 app.get("/Tri-jay", function (req, res) {
   res.json({
     protocol: req.protocol,
